@@ -1,0 +1,50 @@
+# Steps Performed During Creating Dashboard Using Power BI
+Loaded the Data into Power BI
+
+Data cleaning:
+
+There Some Data cleaning is to be done on data set,
+1.Sales.Markets Table : There are Blank Row, So I Removed Those Rows By clicking Home Tab-Remove Rows-Remove Bottom Rows- 2 rows which are blank
+
+2.Sales.Transaction Table : a. Removed The Rows from Sales_amount cloumn where sale_amount is <=0
+                            b. There are some currency are in USD so that is to be convert into INR so I created a conditional column by Clicking Add clomn tab - Conditional column 
+                               and ran this query :  = Table.AddColumn(#"Filtered Rows", "Custom", each if [currency] = "USD#(cr)" then [sales_amount]*75 else [sales_amount])
+                            c. Then I remaned the column as Normalised_sales_amount.
+                            d. There are some Duplicate Rows interms "INR" and USD" In currency column so I Filtered those rows and kept only "INR/r" and "USD/r" types.
+                            e. also There is non-Printable characters in Currency column so I cleaned that by clicking Transform tab-Format-clean.
+                            
+                            Then Clicked close&save
+                            
+3. Data Modeling : Created a relationship between different tables by drag and dropping common cloumns in tables. Which in terms results in a Star Schema.
+
+4. DAX(Data Analysis Expression) : I created a new Table "calculations",Then new measure in that table and ran this DAX Function : 
+                                 a. Revenue = SUM('sale transactions'[Normalised_sales_amount])
+                                 b. Sales Quantity = SUM('sales transactions'[sales_qty])
+                                 
+4. Report Building : I selected The different Visuals for Different type of Datas and Build the Dashboard.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Queries Performed in MySQL to Filter the data
+
+To Display all the data from different Tables
+1. Select * from Sales.Customers;
+2. select * from Sales.Markets;
+3. Select * from Sales.Transactions;
+4.Select * From sales.Products;
+
+To know the Total Number of rows in the table
+1. Select count(*) from Sales.Customers;
+2. select count(*) from Sales.Markets;
+3. Select count(*) from Sales.Transactions;
+4. Select count(*) From sales.Products;
+
+To Know and Remove Blank rows from  sales.Markets
+select * from Sales.Markets where zone=""
+delete * from Sales.Markets where zone=""
+
+To know Distinct Records in Sales.Transaction.Currency Table
+select distinct currency from Sales.transactions.Currency;
+
+To Remove Duplicate Records from Slaes.Transactions Table with currency type "INR" and "USD"
+delete * from Sales.Transactions where currency in("INR, "USD")
+
